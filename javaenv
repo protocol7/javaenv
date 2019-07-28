@@ -206,6 +206,7 @@ def print_progress(iteration, total, suffix, bar_length=50):
 
     sys.stdout.flush()
 
+
 def javaenv():
     parser = argparse.ArgumentParser(description='Java version manager')
     subparsers = parser.add_subparsers(dest='cmd')
@@ -245,6 +246,7 @@ def javaenv():
         list_installed()
     elif cmd == "list-remote":
         list_remote()
+
 
 if __name__ == "__main__":
     bn = os.path.basename(sys.argv[0])
