@@ -1,0 +1,153 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
+import os
+import os.path
+import sys
+import tarfile
+import tempfile
+import urllib
+
+javaenv_home = os.path.expanduser("~/.javaenv/") # TODO override with env variable
+versions_dir = javaenv_home + "versions/"
+
+# TODO move to json?
+VERSIONS = {
+  "openjdk-9.0.4": {
+      "url": "https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_osx-x64_bin.tar.gz",
+      "home_dir": "jdk-9.0.4.jdk/Contents/Home/"
+    },
+  "openjdk-11.0.1": {
+      "url": "https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_osx-x64_bin.tar.gz",
+      "home_dir": "jdk-11.0.1.jdk/Contents/Home/"
+    },
+  "openjdk-11.0.2": {
+      "url": "https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_osx-x64_bin.tar.gz",
+      "home_dir": "jdk-11.0.2.jdk/Contents/Home/"
+    },
+  "openjdk-12": {
+      "url": "https://download.java.net/java/GA/jdk12/33/GPL/openjdk-12_osx-x64_bin.tar.gz",
+      "home_dir": "jdk-12.jdk/Contents/Home/"
+    },
+}
+
+def debug(msg):
+    print(msg, file=sys.stderr)
+
+def make_versions_dir():
+    if not os.path.exists(versions_dir):
+        os.makedirs(versions_dir)
+    debug("versions dir: " + versions_dir)
+    return versions_dir
+
+def get_version_dir(version):
+    return versions_dir + version + "/"
+
+def make_version_dir(version):
+    version_dir = get_version_dir(version)
+    if not os.path.exists(version_dir):
+        os.makedirs(version_dir)
+    return version_dir
+
+def get_installed_versions():
+    debug("getting installed versions")
+    versions = os.listdir(make_versions_dir())
+    debug(versions)
+    return versions
+
+def get_download_url(version):
+    debug("getting download url for " + version)
+    return VERSIONS[version]["url"]
+
+def is_version_installed(version):
+    version_dir = get_version_dir(version)
+    return os.path.exists(version_dir)
+
+def get_java_home(version):
+    if is_version_installed(version):
+        return make_version_dir(version) + VERSIONS[version]["home_dir"]
+    else:
+        raise Exception("No installed versions of Java matched " + version)
+
+def download(version):
+    debug("downloading")
+    tmp_file = tempfile.mktemp()
+    urllib.urlretrieve(get_download_url(version), tmp_file, lambda b, bs, t: print_progress(b*bs, t))
+    debug("downloaded")
+
+    version_dir = make_version_dir(version)
+
+    tar = tarfile.open(tmp_file)
+    tar.extractall(path = version_dir)
+    tar.close()
+    debug("extracted")
+    debug(version + " available at " +  get_java_home(version))
+
+def install(version):
+    debug("install " + version)
+    installed_versions = get_installed_versions()
+    if version in installed_versions:
+        debug("Already installed")
+    else:
+        download(version)
+
+def list_installed():
+    for version in sorted(get_installed_versions()):
+        print(version)
+
+def list_remote():
+    for version in VERSIONS.iterkeys():
+        print(version)
+
+def get_version():
+    java_version_file = ".javaversion"
+    if len(sys.argv) > 2:
+        debug("Getting version from command line")
+        version = sys.argv[2]
+    elif os.path.exists(java_version_file):
+        debug("Getting version from " + java_version_file)
+        with open(java_version_file, 'r') as f:
+            version = f.read().strip()
+            debug("Read " + version + " from " + java_version_file)
+    else:
+        raise Exception("Undefined version")
+
+    if version[0].isdigit():
+        return "openjdk-" + version
+    else:
+        return version
+
+def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=50):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+        iteration   - Required  : current iteration (Int)
+        total       - Required  : total iterations (Int)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+        decimals    - Optional  : positive number of decimals in percent complete (Int)
+        bar_length  - Optional  : character length of bar (Int)
+    """
+    str_format = "{0:." + str(decimals) + "f}"
+    percents = str_format.format(100 * (iteration / float(total)))
+    filled_length = int(round(bar_length * iteration / float(total)))
+    bar = '█' * filled_length + '-' * (bar_length - filled_length)
+
+    sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),
+
+    if iteration == total:
+        sys.stdout.write('\n')
+    sys.stdout.flush()
+
+if __name__ == "__main__":
+    cmd = sys.argv[1]
+
+    if cmd == "install":
+        install(get_version())
+    elif cmd == "home":
+        print(get_java_home(get_version()))
+    elif cmd == "list":
+        list_installed()
+    elif cmd == "list-remote":
+        list_remote()
