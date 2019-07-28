@@ -114,7 +114,7 @@ export JAVA_HOME=$(javaenv home)
 
 ## Verification of installations
 
-When downloading installtion files, javaenv will verify the expected SHA256/MD6
+When downloading installation files, javaenv will verify the expected SHA256/MD6
 hash.  Note that the expected hash is stored in the `javaenv` command itself,
 so this requires you to trust your javaenv installation.
 
