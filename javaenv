@@ -10,8 +10,8 @@ import tempfile
 import urllib
 
 DEBUG = os.environ.get("JAVAENV_DEBUG") == "true"
-javaenv_home = os.path.expanduser(
-    "~/.javaenv/")  # TODO override with env variable
+javaenv_home = os.environ.get("JAVAENV_HOME",
+                              os.path.expanduser("~/.javaenv/"))
 versions_dir = javaenv_home + "versions/"
 
 VERSIONS = {
