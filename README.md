@@ -6,6 +6,12 @@ A Java version manager heavily inspired by
 Java versions and allows for keeping the Java version for a project under
 version control.
 
+## Why not jEnv?
+
+[jEnv](https://github.com/jenv/jenv) is a great tool with similar goals.
+However, I wanted javaenv to manage the full life cycle of the Java
+environment, including installation, in order to simplify some workflows.
+
 ## Support
 
 javaenv supports Linux and Mac OS X. Support for Windows should be doable but
