@@ -10,9 +10,9 @@ import tempfile
 import urllib
 
 DEBUG = os.environ.get("JAVAENV_DEBUG") == "true"
-javaenv_home = os.environ.get("JAVAENV_HOME",
+JAVAENV_HOME = os.environ.get("JAVAENV_HOME",
                               os.path.expanduser("~/.javaenv/"))
-versions_dir = javaenv_home + "versions/"
+VERSIONS_DIR = JAVAENV_HOME + "versions/"
 
 VERSIONS = {
     "openjdk-9.0.4": {
@@ -44,14 +44,14 @@ def debug(msg):
 
 
 def make_versions_dir():
-    if not os.path.exists(versions_dir):
-        os.makedirs(versions_dir)
-    debug("versions dir: " + versions_dir)
-    return versions_dir
+    if not os.path.exists(VERSIONS_DIR):
+        os.makedirs(VERSIONS_DIR)
+    debug("versions dir: " + VERSIONS_DIR)
+    return VERSIONS_DIR
 
 
 def get_version_dir(version):
-    return versions_dir + version + "/"
+    return VERSIONS_DIR + version + "/"
 
 
 def make_version_dir(version):
