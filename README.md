@@ -124,3 +124,4 @@ so this requires you to trust your javaenv installation.
 * Add all released and still available versions
 * Add support for building Docker images
 * Add direct support for setting Java version for Maven
+* [Long term] Remove need for Python
