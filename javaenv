@@ -63,7 +63,7 @@ def debug(msg):
 def make_versions_dir():
     if not os.path.exists(VERSIONS_DIR):
         os.makedirs(VERSIONS_DIR)
-    debug("versions dir: " + VERSIONS_DIR)
+        debug("Created versions dir: " + VERSIONS_DIR)
     return VERSIONS_DIR
 
 
@@ -121,14 +121,15 @@ def verify_hash(version, path):
 
 
 def download(version):
-    debug("downloading")
+    url = get_download_url(version)
+    debug("downloading %s" % url)
     tmp_file = tempfile.mktemp()
-    urllib.request.urlretrieve(get_download_url(version), tmp_file,
+    urllib.request.urlretrieve(url, tmp_file,
                                lambda b, bs, t: print_progress(b * bs, t))
     print()  # print newline after progress bar
     debug("downloaded")
 
-    debug("verify")
+    debug("verifying hash")
     verify_hash(version, tmp_file)
 
     version_dir = make_version_dir(version)
