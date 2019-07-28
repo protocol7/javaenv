@@ -8,8 +8,8 @@ version control.
 
 ## Support
 
-javaenv currently only support Mac OS X. Linux will be supported. Support for
-Windows should be doable.
+javaenv supports Linux and Mac OS X. Support for Windows should be doable but
+is not on my roadmap.
 
 ## Installation
 
@@ -106,7 +106,7 @@ List all versions available for installation.
 
 Print the value for `JAVA_HOME` for the active version. The version can either
 be provided to the command, or read from a `.javaversion file`. The command is
-useful when setting `JAVA_HOME` for tools using it, e.g. Maven.
+useful for tools using `JAVA_HOME`, e.g. Maven.
 
 ```
 export JAVA_HOME=$(javaenv home)
@@ -122,6 +122,5 @@ so this requires you to trust your javaenv installation.
 
 * Add support for automatically shimming Java command line tools
 * Add all released and still available versions
-* Add support for Linux
 * Add support for building Docker images
 * Add direct support for setting Java version for Maven
