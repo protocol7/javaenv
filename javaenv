@@ -9,11 +9,11 @@ import tarfile
 import tempfile
 import urllib
 
+DEBUG = os.environ.get("JAVAENV_DEBUG") == "true"
 javaenv_home = os.path.expanduser(
     "~/.javaenv/")  # TODO override with env variable
 versions_dir = javaenv_home + "versions/"
 
-# TODO move to json?
 VERSIONS = {
     "openjdk-9.0.4": {
         "url":
@@ -39,7 +39,8 @@ VERSIONS = {
 
 
 def debug(msg):
-    print(msg, file=sys.stderr)
+    if DEBUG:
+        print(msg, file=sys.stderr)
 
 
 def make_versions_dir():
