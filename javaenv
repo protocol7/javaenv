@@ -197,7 +197,7 @@ def get_version(argv_version):
         version = get_version_from_file(DEFAULT_VERSION_FILE)
     else:
         raise Exception(
-            "Undefined version, make sure you run this command from a directory with a .javaversion file"
+            "Undefined version, make sure you run this command from a directory with a .javaversion file, or provide a default version in %s" % DEFAULT_VERSION_FILE
         )
 
     if version[0].isdigit():
@@ -256,6 +256,8 @@ def javaenv():
         list_installed()
     elif cmd == "list-remote":
         list_remote()
+    else:
+        parser.print_usage()
 
 
 if __name__ == "__main__":
