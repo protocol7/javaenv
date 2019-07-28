@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+import argparse
 import hashlib
 import os
 import os.path
@@ -158,11 +159,11 @@ def list_remote():
         print(version)
 
 
-def get_version():
+def get_version(argv_version):
     java_version_file = ".javaversion"
-    if len(sys.argv) > 2:
+    if argv_version:
         debug("Getting version from command line")
-        version = sys.argv[2]
+        version = argv_version
     elif os.path.exists(java_version_file):
         debug("Getting version from " + java_version_file)
         with open(java_version_file, 'r') as f:
@@ -195,12 +196,33 @@ def print_progress(iteration,
 
 
 if __name__ == "__main__":
-    cmd = sys.argv[1]
+    parser = argparse.ArgumentParser(description='Java version manager')
+    subparsers = parser.add_subparsers(dest='cmd')
 
+    install_parser = subparsers.add_parser('install',
+                                           help='Install a Java version')
+    install_parser.add_argument(
+        'version',
+        nargs='?',
+        default=None,
+        help='version to install, default to using .javaversion')
+
+    home_parser = subparsers.add_parser('home', help='Print active JAVA_HOME')
+    home_parser.add_argument(
+        'version',
+        nargs='?',
+        default=None,
+        help='version to use, default to using .javaversion')
+    subparsers.add_parser('list', help='List installed versions')
+    subparsers.add_parser('list-remote', help='List all installable versions')
+
+    args = parser.parse_args()
+
+    cmd = args.cmd
     if cmd == "install":
-        install(get_version())
+        install(get_version(args.version))
     elif cmd == "home":
-        print(get_java_home(get_version()))
+        print(get_java_home(get_version(args.version)))
     elif cmd == "list":
         list_installed()
     elif cmd == "list-remote":
