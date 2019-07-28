@@ -17,6 +17,7 @@ DEBUG = os.environ.get("JAVAENV_DEBUG") == "true"
 JAVAENV_HOME = os.environ.get("JAVAENV_HOME",
                               os.path.expanduser("~/.javaenv/"))
 VERSIONS_DIR = os.path.join(JAVAENV_HOME, "versions/")
+DEFAULT_VERSION_FILE = os.path.join(JAVAENV_HOME, "version")
 
 VERSIONS = {
     "adoptopenjdk-8u222": {
@@ -177,18 +178,27 @@ def list_remote():
         print(version)
 
 
+def get_version_from_file(path):
+    debug("Getting version from " + path)
+    with open(path, 'r') as f:
+        version = f.read().strip()
+        debug("Read " + version + " from " + path)
+        return version
+
+
 def get_version(argv_version):
     java_version_file = ".javaversion"
     if argv_version:
         debug("Getting version from command line")
         version = argv_version
     elif os.path.exists(java_version_file):
-        debug("Getting version from " + java_version_file)
-        with open(java_version_file, 'r') as f:
-            version = f.read().strip()
-            debug("Read " + version + " from " + java_version_file)
+        version = get_version_from_file(java_version_file)
+    elif os.path.exists(DEFAULT_VERSION_FILE):
+        version = get_version_from_file(DEFAULT_VERSION_FILE)
     else:
-        raise Exception("Undefined version")
+        raise Exception(
+            "Undefined version, make sure you run this command from a directory with a .javaversion file"
+        )
 
     if version[0].isdigit():
         return "openjdk-" + version
@@ -250,10 +260,14 @@ def javaenv():
 
 if __name__ == "__main__":
     bn = os.path.basename(sys.argv[0])
-    if bn == "javaenv":
-        javaenv()
-    else:
-        cmd = get_java_home(get_version(None)) + "bin/" + bn
-        args = [cmd] + sys.argv[1:]
-        p = subprocess.run(args)
-        sys.exit(p.returncode)
+    try:
+        if bn == "javaenv":
+            javaenv()
+        else:
+            cmd = get_java_home(get_version(None)) + "bin/" + bn
+            args = [cmd] + sys.argv[1:]
+            p = subprocess.run(args)
+            sys.exit(p.returncode)
+    except Exception as e:
+        print(e)
+        sys.exit(1)
