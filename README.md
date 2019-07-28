@@ -1,15 +1,15 @@
 # javaenv
 
-A Java version manager heavily inspired by rbenv and
-[tfenv](https://github.com/tfutils/tfenv). `javaenv` manages
-your installed Java versions and allow for keeping the Java version for a
-project under version control.
+A Java version manager heavily inspired by
+[rbenv](https://github.com/rbenv/rbenv) and
+[tfenv](https://github.com/tfutils/tfenv). `javaenv` manages your installed
+Java versions and allows for keeping the Java version for a project under
+version control.
 
 ## Support
 
-javaenv currently only support Mac OS X but Linux support would be
-straight-forward. Support for Windows should be doable but will require more
-work.
+javaenv currently only support Mac OS X. Linux will be supported. Support for
+Windows should be doable.
 
 ## Installation
 
@@ -29,8 +29,8 @@ $ ln -s ~/.javaenv/javaenv /usr/local/bin
 Shim the Java command line tools:
 
 ```
-$ ln -nsf ~/.javaenv/javaenv /usr/local/bin/java
-$ ln -nsf ~/.javaenv/javaenv /usr/local/bin/javac
+$ ln -s ~/.javaenv/javaenv /usr/local/bin/java
+$ ln -s ~/.javaenv/javaenv /usr/local/bin/javac
 ...
 ```
 
@@ -38,6 +38,7 @@ This will allow you to automatically switch version for `java`, `javac` and
 other tools, for example:
 
 ```
+$ cd my-java-project
 $ cat .javaversion
 openjdk-11.0.2
 $ javac -version
@@ -51,15 +52,15 @@ javac 11.0.2
 Versions, as provided as command line arguments or in `.javaversion` files are
 in the format of `<distribution>-<version>`. Supported distributions are:
 
-* AdoptOpenJDK
-* Amazon Corretto
-* OpenJDK
-* Oracle
+* `adoptopenjdk`
+* `corretto`
+* `openjdk`
+* `oracle`
 
 A valid version would be, for example, `openjdk-11.0.2`.
 
-The version can for some commands and for .javaversion files exclude the
-distribution, in which case openjdk is used as the default. Thus, a valid
+The version can for some commands and for `.javaversion` files exclude the
+distribution, in which case `openjdk` is used as the default. Thus, a valid
 version can also be, for example, `11.0.2`.
 
 
@@ -80,8 +81,14 @@ Java version.
 
 ### javaenv install [version]
 
-Install a version of the JDK. The version to install can either be provided to
-the command, or read from a .javaversion file.
+Installs a version of the JDK. The version to install can either be provided to
+the command, or read from a `.javaversion` file. if the version is already
+installed, this is a no-op. Thus, when starting work on a project using javaenv
+you can simply run to be all set up:
+
+```
+javaenv install
+```
 
 ### javaenv uninstall version
 
@@ -97,13 +104,19 @@ List all versions available for installation.
 
 ### javaenv home [version]
 
-Print the value for JAVA_HOME for the selected version. The version to install
-can either be provided to the command, or read from a .javaversion file. The
-command is useful when setting JAVA_HOME for tools using it, e.g. Maven.
+Print the value for `JAVA_HOME` for the active version. The version can either
+be provided to the command, or read from a `.javaversion file`. The command is
+useful when setting `JAVA_HOME` for tools using it, e.g. Maven.
 
 ```
 $ export JAVA_HOME=$(javaenv home)
 ```
+
+## Verification of installations
+
+When downloading installtion files, javaenv will verify the SHA256/MD6 hash.
+Note that the expected hash is stored in the `javaenv` command itself, so this
+requires you to trust your javaenv installation.
 
 ## TODO
 
