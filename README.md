@@ -20,6 +20,8 @@ $ git clone https://github.com/protocol7/javaenv.git ~/.javaenv
 
 ```
 
+`javaenv` is a self-contained script and requires Python 3.3 or newer to run.
+
 For convenience, add `javaenv` to your $PATH, e.g. using:
 
 ```
@@ -114,9 +116,9 @@ $ export JAVA_HOME=$(javaenv home)
 
 ## Verification of installations
 
-When downloading installtion files, javaenv will verify the SHA256/MD6 hash.
-Note that the expected hash is stored in the `javaenv` command itself, so this
-requires you to trust your javaenv installation.
+When downloading installtion files, javaenv will verify the expected SHA256/MD6
+hash.  Note that the expected hash is stored in the `javaenv` command itself,
+so this requires you to trust your javaenv installation.
 
 ## TODO
 
