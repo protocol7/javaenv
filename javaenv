@@ -15,7 +15,7 @@ import urllib.request
 DEBUG = os.environ.get("JAVAENV_DEBUG") == "true"
 JAVAENV_HOME = os.environ.get("JAVAENV_HOME",
                               os.path.expanduser("~/.javaenv/"))
-VERSIONS_DIR = JAVAENV_HOME + "versions/"
+VERSIONS_DIR = os.path.join(JAVAENV_HOME, "versions/")
 
 VERSIONS = {
     "adoptopenjdk-8u222": {
@@ -68,12 +68,12 @@ def debug(msg):
 def make_versions_dir():
     if not os.path.exists(VERSIONS_DIR):
         os.makedirs(VERSIONS_DIR)
-        debug("Created versions dir: " + VERSIONS_DIR)
+        debug("Created versions dir: %s" % VERSIONS_DIR)
     return VERSIONS_DIR
 
 
 def get_version_dir(version):
-    return VERSIONS_DIR + version + "/"
+    return os.path.join(VERSIONS_DIR, "%s/" % version)
 
 
 def make_version_dir(version):
