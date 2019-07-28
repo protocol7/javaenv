@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+import hashlib
 import os
 import os.path
 import sys
 import tarfile
 import tempfile
-import urllib
+import urllib.request
 
 DEBUG = os.environ.get("JAVAENV_DEBUG") == "true"
 JAVAENV_HOME = os.environ.get("JAVAENV_HOME",
@@ -18,22 +19,34 @@ VERSIONS = {
     "openjdk-9.0.4": {
         "url":
         "https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_osx-x64_bin.tar.gz",
-        "home_dir": "jdk-9.0.4.jdk/Contents/Home/"
+        "home_dir":
+        "jdk-9.0.4.jdk/Contents/Home/",
+        "sha256":
+        "66415406716fc42cff36e2d74ae991d46c42b3cf317b0425c7bf67697c616716"
     },
     "openjdk-11.0.1": {
         "url":
         "https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_osx-x64_bin.tar.gz",
-        "home_dir": "jdk-11.0.1.jdk/Contents/Home/"
+        "home_dir":
+        "jdk-11.0.1.jdk/Contents/Home/",
+        "sha256":
+        "fa07eee08fa0f3de541ee1770de0cdca2ae3876f3bd78c329f27e85c287cd070"
     },
     "openjdk-11.0.2": {
         "url":
         "https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_osx-x64_bin.tar.gz",
-        "home_dir": "jdk-11.0.2.jdk/Contents/Home/"
+        "home_dir":
+        "jdk-11.0.2.jdk/Contents/Home/",
+        "sha256":
+        "f365750d4be6111be8a62feda24e265d97536712bc51783162982b8ad96a70ee"
     },
     "openjdk-12": {
         "url":
         "https://download.java.net/java/GA/jdk12/33/GPL/openjdk-12_osx-x64_bin.tar.gz",
-        "home_dir": "jdk-12.jdk/Contents/Home/"
+        "home_dir":
+        "jdk-12.jdk/Contents/Home/",
+        "sha256":
+        "52164a04db4d3fdfe128cfc7b868bc4dae52d969f03d53ae9d4239fe783e1a3a"
     },
 }
 
@@ -85,12 +98,29 @@ def get_java_home(version):
         raise Exception("No installed versions of Java matched " + version)
 
 
+def verify_hash(version, path):
+    sha = hashlib.sha256()
+    with open(path, 'rb') as f:
+        while True:
+            data = f.read(65536)
+            if not data:
+                break
+            sha.update(data)
+    expected_hash = VERSIONS[version]["sha256"]
+    if "{0}".format(sha.hexdigest()) != expected_hash:
+        raise Exception("Unexpected hash for downloaded file, aborting")
+
+
 def download(version):
     debug("downloading")
     tmp_file = tempfile.mktemp()
-    urllib.urlretrieve(get_download_url(version), tmp_file,
-                       lambda b, bs, t: print_progress(b * bs, t))
+    urllib.request.urlretrieve(get_download_url(version), tmp_file,
+                               lambda b, bs, t: print_progress(b * bs, t))
+    print()  # print newline after progress bar
     debug("downloaded")
+
+    debug("verify")
+    verify_hash(version, tmp_file)
 
     version_dir = make_version_dir(version)
 
@@ -153,8 +183,6 @@ def print_progress(iteration,
     sys.stdout.write('\r%s |%s| %s%s %s' %
                      (prefix, bar, percents, '%', suffix)),
 
-    if iteration == total:
-        sys.stdout.write('\n')
     sys.stdout.flush()
 
 
