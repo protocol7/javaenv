@@ -17,54 +17,41 @@ VERSIONS_DIR = JAVAENV_HOME + "versions/"
 
 VERSIONS = {
     "adoptopenjdk-8u222": {
-        "url":
-        "https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u222-b10/OpenJDK8U-jdk_x64_mac_hotspot_8u222b10.tar.gz",
-        "home_dir":
-        "jdk8u222-b10/Contents/Home/",
-        "sha256":
-        "9605fd00d2960934422437f601c7a9a1c5537309b9199d5bc75f84f20cd29a76"
+        "url": "https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u222-b10/OpenJDK8U-jdk_x64_mac_hotspot_8u222b10.tar.gz",
+        "home_dir": "jdk8u222-b10/Contents/Home/",
+        "sha256": "9605fd00d2960934422437f601c7a9a1c5537309b9199d5bc75f84f20cd29a76"
+    },
+    "corretto-11.0.4.11.1": {
+        "url": "https://d3pxv6yz143wms.cloudfront.net/11.0.4.11.1/amazon-corretto-11.0.4.11.1-macosx-x64.tar.gz",
+        "home_dir": "amazon-corretto-11.jdk/Contents/Home/",
+        "md5": "44bb1e1e6368e1b0f994f5e899b0adc9"
     },
     "openjdk-9.0.4": {
-        "url":
-        "https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_osx-x64_bin.tar.gz",
-        "home_dir":
-        "jdk-9.0.4.jdk/Contents/Home/",
-        "sha256":
-        "66415406716fc42cff36e2d74ae991d46c42b3cf317b0425c7bf67697c616716"
+        "url": "https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_osx-x64_bin.tar.gz",
+        "home_dir": "jdk-9.0.4.jdk/Contents/Home/",
+        "sha256": "66415406716fc42cff36e2d74ae991d46c42b3cf317b0425c7bf67697c616716"
     },
     "openjdk-11.0.1": {
-        "url":
-        "https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_osx-x64_bin.tar.gz",
-        "home_dir":
-        "jdk-11.0.1.jdk/Contents/Home/",
-        "sha256":
-        "fa07eee08fa0f3de541ee1770de0cdca2ae3876f3bd78c329f27e85c287cd070"
+        "url": "https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_osx-x64_bin.tar.gz",
+        "home_dir": "jdk-11.0.1.jdk/Contents/Home/",
+        "sha256": "fa07eee08fa0f3de541ee1770de0cdca2ae3876f3bd78c329f27e85c287cd070"
     },
     "openjdk-11.0.2": {
-        "url":
-        "https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_osx-x64_bin.tar.gz",
-        "home_dir":
-        "jdk-11.0.2.jdk/Contents/Home/",
-        "sha256":
-        "f365750d4be6111be8a62feda24e265d97536712bc51783162982b8ad96a70ee"
+        "url": "https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_osx-x64_bin.tar.gz",
+        "home_dir": "jdk-11.0.2.jdk/Contents/Home/",
+        "sha256": "f365750d4be6111be8a62feda24e265d97536712bc51783162982b8ad96a70ee"
     },
     "openjdk-12": {
-        "url":
-        "https://download.java.net/java/GA/jdk12/33/GPL/openjdk-12_osx-x64_bin.tar.gz",
-        "home_dir":
-        "jdk-12.jdk/Contents/Home/",
-        "sha256":
-        "52164a04db4d3fdfe128cfc7b868bc4dae52d969f03d53ae9d4239fe783e1a3a"
+        "url": "https://download.java.net/java/GA/jdk12/33/GPL/openjdk-12_osx-x64_bin.tar.gz",
+        "home_dir": "jdk-12.jdk/Contents/Home/",
+        "sha256": "52164a04db4d3fdfe128cfc7b868bc4dae52d969f03d53ae9d4239fe783e1a3a"
     },
     "oracle-12.0.1": {
-        "url":
-        "https://download.oracle.com/java/GA/jdk12.0.1/69cfe15208a647278a19ef0990eea691/12/GPL/openjdk-12.0.1_osx-x64_bin.tar.gz",
-        "home_dir":
-        "jdk-12.0.1.jdk/Contents/Home/",
-        "sha256":
-        "cba6f42f82496f62c51fb544e243d440984d442bdc906550a30428d8be6189e5"
+        "url": "https://download.oracle.com/java/GA/jdk12.0.1/69cfe15208a647278a19ef0990eea691/12/GPL/openjdk-12.0.1_osx-x64_bin.tar.gz",
+        "home_dir": "jdk-12.0.1.jdk/Contents/Home/",
+        "sha256": "cba6f42f82496f62c51fb544e243d440984d442bdc906550a30428d8be6189e5"
     },
-}
+} # yapf: disable
 
 
 def debug(msg):
@@ -115,15 +102,20 @@ def get_java_home(version):
 
 
 def verify_hash(version, path):
-    sha = hashlib.sha256()
+    if "sha256" in VERSIONS[version]:
+        hash = hashlib.sha256()
+        expected_hash = VERSIONS[version]["sha256"]
+    else:
+        hash = hashlib.md5()
+        expected_hash = VERSIONS[version]["md5"]
+
     with open(path, 'rb') as f:
         while True:
             data = f.read(65536)
             if not data:
                 break
-            sha.update(data)
-    expected_hash = VERSIONS[version]["sha256"]
-    if "{0}".format(sha.hexdigest()) != expected_hash:
+            hash.update(data)
+    if "{0}".format(hash.hexdigest()) != expected_hash:
         raise Exception("Unexpected hash for downloaded file, aborting")
 
 
