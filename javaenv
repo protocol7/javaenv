@@ -16,6 +16,14 @@ JAVAENV_HOME = os.environ.get("JAVAENV_HOME",
 VERSIONS_DIR = JAVAENV_HOME + "versions/"
 
 VERSIONS = {
+    "adoptopenjdk-8u222": {
+        "url":
+        "https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u222-b10/OpenJDK8U-jdk_x64_mac_hotspot_8u222b10.tar.gz",
+        "home_dir":
+        "jdk8u222-b10/Contents/Home/",
+        "sha256":
+        "9605fd00d2960934422437f601c7a9a1c5537309b9199d5bc75f84f20cd29a76"
+    },
     "openjdk-9.0.4": {
         "url":
         "https://download.java.net/java/GA/jdk9/9.0.4/binaries/openjdk-9.0.4_osx-x64_bin.tar.gz",
