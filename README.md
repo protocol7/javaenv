@@ -34,29 +34,39 @@ $ ln -nsf ~/.javaenv/javaenv /usr/local/bin/javac
 ...
 ```
 
+This will allow you to automatically switch version for `java`, `javac` and
+other tools, for example:
+
+```
+$ cat .javaversion
+openjdk-11.0.2
+$ javac -version
+javac 11.0.2
+```
+
 ## Usage
 
 ### Versions
 
-Versions, as provided as command line arguments or in .javaversion files are in
-the format of <distribution>-<version>. Supported distributions are:
+Versions, as provided as command line arguments or in `.javaversion` files are
+in the format of `<distribution>-<version>`. Supported distributions are:
 
-* OpenJDK
 * AdoptOpenJDK
-* Oracle
 * Amazon Corretto
+* OpenJDK
+* Oracle
 
-A valid version would be for example `openjdk-11.0.2`.
+A valid version would be, for example, `openjdk-11.0.2`.
 
 The version can for some commands and for .javaversion files exclude the
 distribution, in which case openjdk is used as the default. Thus, a valid
-version can also be for example `11.0.2`.
+version can also be, for example, `11.0.2`.
 
 
 ### .javaversion
 
 If a version is not provided for a command, or when calling Java command line
-utilities, the version will be read from a file called .javaversion in the
+utilities, the version will be read from a file called `.javaversion` in the
 current directory. This file should contain only the version, as defined above,
 for example:
 
@@ -64,9 +74,9 @@ for example:
 $ echo 'openjdk-11.0.2' > .javaversion
 ```
 
-It is recommended that .javaversion is stored with your source code in your
-version control system. This allows contributors to easily install and use the
-correct Java version.
+It is recommended that `.javaversion` is kept under version control with your
+source code. This allows contributors to easily install and use the correct
+Java version.
 
 ### javaenv install [version]
 
