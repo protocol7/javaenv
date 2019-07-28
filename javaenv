@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import os
 import os.path
+import shutil
 import sys
 import tarfile
 import tempfile
@@ -55,9 +56,13 @@ VERSIONS = {
 } # yapf: disable
 
 
+def eprint(msg):
+    print(msg, file=sys.stderr)
+
+
 def debug(msg):
     if DEBUG:
-        print(msg, file=sys.stderr)
+        eprint(msg)
 
 
 def make_versions_dir():
@@ -150,6 +155,16 @@ def install(version):
         download(version)
 
 
+def uninstall(version):
+    version_dir = get_version_dir(version)
+    if os.path.exists(version_dir):
+        debug("Removing %s" % version_dir)
+        shutil.rmtree(version_dir)
+        debug("Removed %s" % version_dir)
+    else:
+        eprint("Version not installed")
+
+
 def list_installed():
     for version in sorted(get_installed_versions()):
         print(version)
@@ -214,7 +229,13 @@ if __name__ == "__main__":
         nargs='?',
         default=None,
         help='version to use, default to using .javaversion')
+
     subparsers.add_parser('list', help='List installed versions')
+
+    uninstall_parser = subparsers.add_parser('uninstall',
+                                             help='Uninstall a version')
+    uninstall_parser.add_argument('version', help='version to uninstall')
+
     subparsers.add_parser('list-remote', help='List all installable versions')
 
     args = parser.parse_args()
@@ -224,6 +245,8 @@ if __name__ == "__main__":
         install(get_version(args.version))
     elif cmd == "home":
         print(get_java_home(get_version(args.version)))
+    elif cmd == "uninstall":
+        uninstall(args.version)
     elif cmd == "list":
         list_installed()
     elif cmd == "list-remote":
