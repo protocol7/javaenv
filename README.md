@@ -16,8 +16,7 @@ Windows should be doable.
 ### Using git
 
 ```
-$ git clone https://github.com/protocol7/javaenv.git ~/.javaenv
-
+git clone https://github.com/protocol7/javaenv.git ~/.javaenv
 ```
 
 `javaenv` is a self-contained script and requires Python 3.3 or newer to run.
@@ -25,14 +24,14 @@ $ git clone https://github.com/protocol7/javaenv.git ~/.javaenv
 For convenience, add `javaenv` to your $PATH, e.g. using:
 
 ```
-$ ln -s ~/.javaenv/javaenv /usr/local/bin
+ln -s ~/.javaenv/javaenv /usr/local/bin
 ```
 
 Shim the Java command line tools:
 
 ```
-$ ln -s ~/.javaenv/javaenv /usr/local/bin/java
-$ ln -s ~/.javaenv/javaenv /usr/local/bin/javac
+ln -s ~/.javaenv/javaenv /usr/local/bin/java
+ln -s ~/.javaenv/javaenv /usr/local/bin/javac
 ...
 ```
 
@@ -65,7 +64,6 @@ The version can for some commands and for `.javaversion` files exclude the
 distribution, in which case `openjdk` is used as the default. Thus, a valid
 version can also be, for example, `11.0.2`.
 
-
 ### .javaversion
 
 If a version is not provided for a command, or when calling Java command line
@@ -74,7 +72,7 @@ current directory. This file should contain only the version, as defined above,
 for example:
 
 ```
-$ echo 'openjdk-11.0.2' > .javaversion
+echo 'openjdk-11.0.2' > .javaversion
 ```
 
 It is recommended that `.javaversion` is kept under version control with your
@@ -111,7 +109,7 @@ be provided to the command, or read from a `.javaversion file`. The command is
 useful when setting `JAVA_HOME` for tools using it, e.g. Maven.
 
 ```
-$ export JAVA_HOME=$(javaenv home)
+export JAVA_HOME=$(javaenv home)
 ```
 
 ## Verification of installations
@@ -122,8 +120,8 @@ so this requires you to trust your javaenv installation.
 
 ## TODO
 
-  * Add support for automatically shimming Java command line tools
-  * Add all released and still available versions
-  * Add support for Linux
-  * Add support for building Docker images
-  * Add direct support for setting Java version for Maven
+* Add support for automatically shimming Java command line tools
+* Add all released and still available versions
+* Add support for Linux
+* Add support for building Docker images
+* Add direct support for setting Java version for Maven
